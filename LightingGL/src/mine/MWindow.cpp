@@ -56,13 +56,13 @@ void MWindow::HandleInput(GLFWwindow* window) {
 	float cameraSpeed = 1.f * dt;
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
-	else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		currentCamera.MoveForward(-1, cameraSpeed);
-	else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		currentCamera.MoveForward(1, cameraSpeed);
-	else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		currentCamera.MoveLateral(1, cameraSpeed);
-	else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		currentCamera.MoveLateral(-1, cameraSpeed);
 }
 void MWindow::MouseMovement(GLFWwindow* w, double x, double y) {

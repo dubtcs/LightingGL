@@ -25,24 +25,24 @@ int main() {
 		-0.5, -0.5, -0.5, // BBL 6
 		-0.5, 0.5, -0.5 // BTL 7
 	};
-	unsigned int indices[]{ // Absolutely munted cube with holes but atleast it's there lol
-		0, 1, 2, // Face 1
-		2, 3, 0,
+	unsigned int indices[]{
+		0, 1, 2,
+		0, 3, 2,
 
-		0, 1, 4, // Face 2
+		0, 5, 1,
 		4, 5, 0,
 
-		3, 7, 6, // Face 3
-		6, 2, 3,
+		4, 5, 7,
+		7, 5, 6,
 
-		4, 5, 6, // Face 4
-		6, 7, 4,
+		7, 3, 6,
+		3, 2, 6,
 
-		0, 3, 4, // Face 5
-		4, 7, 0,
+		0, 4, 3,
+		3, 4, 7,
 
-		1, 2, 5, // Face 6
-		5, 6, 1
+		1, 5, 2,
+		2, 5, 6
 	};
 
 	unsigned int vertexArray;
@@ -62,7 +62,7 @@ int main() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	glm::mat4 UNIT{ 1.f };
-	glm::mat4 toWorldSpace{ glm::rotate(UNIT, glm::radians(45.f), glm::vec3{1.f, 0.f, 0.f,}) };
+	glm::mat4 toWorldSpace{ glm::rotate(UNIT, 0.f, glm::vec3{1.f, 0.f, 0.f,}) };
 	glm::mat4 toViewSpace{ glm::translate(UNIT, glm::vec3{0.f, 0.f, -2.f}) };
 	glm::mat4 toClipSpace{ glm::perspective(glm::radians(100.0f), (float)(W / H), 0.1f, 100.0f) };
 
@@ -71,17 +71,53 @@ int main() {
 	shader.Set("toViewSpace", toViewSpace);
 	shader.Set("toClipSpace", toClipSpace);
 
+	// LIGHTING
+	unsigned int lightVertexArray;
+	glGenVertexArrays(1, &lightVertexArray);
+	glBindVertexArray(lightVertexArray);
+
+	unsigned int lightVertexBuffer;
+	glGenBuffers(1, &lightVertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, lightVertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	unsigned int lightElementBuffer;
+	glGenBuffers(1, &lightElementBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lightElementBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	glm::vec3 lightPosition{ 2.f, 2.f, 2.f };
+	glm::vec3 lightColor{ 1.f, 1.f, 1.f };
+	glm::vec3 objectColor{ 1.f, 0.5f, 0.5f };
+	glm::vec3 lightSize{ 0.25f,0.25f,0.25f };
+
+	shader.Set("objectColor", objectColor);
+	shader.Set("lightColor", lightColor);
+
 	while (window.Running()) {
 
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glBindVertexArray(vertexArray);
-
 		MCamera& cam = window.GetCamera();
 		toViewSpace = glm::lookAt(cam.GetPosition(), cam.GetPosition() + cam.LookVector(), cam.UpVector());
-		shader.Set("toViewSpace", toViewSpace);
 
+		// BOX
+		glBindVertexArray(vertexArray);
+		toWorldSpace = glm::translate(UNIT, glm::vec3{ 0.f,0.f,0.f });
+		shader.Set("toWorldSpace", toWorldSpace);
+		shader.Set("objectColor", objectColor);
+		shader.Set("toViewSpace", toViewSpace);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+		// LIGHT
+		glBindVertexArray(lightVertexArray);
+		toWorldSpace = glm::translate(UNIT, lightPosition);
+		toWorldSpace = glm::scale(toWorldSpace, lightSize);
+		shader.Set("toWorldSpace", toWorldSpace);
+		shader.Set("objectColor", lightColor);
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 		glfwPollEvents();

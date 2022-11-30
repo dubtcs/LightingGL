@@ -68,3 +68,6 @@ void MShader::Set(const std::string& name, float v) const {
 void MShader::Set(const std::string& name, glm::mat4& v) const {
 	glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()), 1, GL_FALSE, glm::value_ptr(v));
 }
+void MShader::Set(const std::string& name, glm::vec3& v) const {
+	glUniform3fv(glGetUniformLocation(id, name.c_str()), 1, glm::value_ptr(v));
+}
