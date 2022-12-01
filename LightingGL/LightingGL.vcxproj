@@ -163,7 +163,10 @@
     <ClInclude Include="src\mine\MWindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\shaders\box.frag" />
+    <None Include="src\shaders\box.vert" />
     <None Include="src\shaders\f.frag" />
+    <None Include="src\shaders\light.frag" />
     <None Include="src\shaders\v.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
