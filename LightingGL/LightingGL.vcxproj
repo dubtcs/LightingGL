@@ -169,6 +169,9 @@
     <None Include="src\shaders\light.frag" />
     <None Include="src\shaders\v.vert" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\OldVariableData.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

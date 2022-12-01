@@ -1,0 +1,35 @@
+
+This is just stuff I don't use anymore but could be helpful in the future
+
+CUBE:
+	float verts[]{
+		0.5, 0.5, 0.5, // FTR 0
+		0.5, -0.5, 0.5, // FBR 1
+		-0.5, -0.5, 0.5, // FBL 2
+		-0.5, 0.5, 0.5, // FTL 3
+
+		0.5, 0.5, -0.5, // BTR 4
+		0.5, -0.5, -0.5, // BBR 5
+		-0.5, -0.5, -0.5, // BBL 6
+		-0.5, 0.5, -0.5 // BTL 7
+	};
+	unsigned int indices[]{
+		0, 1, 2,
+		0, 3, 2,
+
+		0, 5, 1,
+		4, 5, 0,
+
+		4, 5, 7,
+		7, 5, 6,
+
+		7, 3, 6,
+		3, 2, 6,
+
+		0, 4, 3,
+		3, 4, 7,
+
+		1, 5, 2,
+		2, 5, 6
+	};
+

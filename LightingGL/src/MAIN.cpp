@@ -5,6 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <functional>
+
 #include "mine/allinclude.h"
 
 const unsigned int W{ 1920 };
@@ -15,37 +17,50 @@ int main() {
 	//MShader shader{ "src/shaders/v.vert", "src/shaders/f.frag" };
 
 	MShader objectShader{ "src/shaders/box.vert", "src/shaders/box.frag" };
-	MShader lightShader{ "src/shaders/box.vert", "src/shaders/light.frag" };
+	MShader lightShader{ "src/shaders/light.vert", "src/shaders/light.frag" };
 
-	float verts[]{
-		0.5, 0.5, 0.5, // FTR 0
-		0.5, -0.5, 0.5, // FBR 1
-		-0.5, -0.5, 0.5, // FBL 2
-		-0.5, 0.5, 0.5, // FTL 3
+	float verts[] = {
+	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-		0.5, 0.5, -0.5, // BTR 4
-		0.5, -0.5, -0.5, // BBR 5
-		-0.5, -0.5, -0.5, // BBL 6
-		-0.5, 0.5, -0.5 // BTL 7
-	};
-	unsigned int indices[]{
-		0, 1, 2,
-		0, 3, 2,
+	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
 
-		0, 5, 1,
-		4, 5, 0,
+	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+	-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-		4, 5, 7,
-		7, 5, 6,
+	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
 
-		7, 3, 6,
-		3, 2, 6,
+	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 
-		0, 4, 3,
-		3, 4, 7,
-
-		1, 5, 2,
-		2, 5, 6
+	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+	 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 	};
 
 	unsigned int vertexArray;
@@ -56,13 +71,10 @@ int main() {
 	glGenBuffers(1, &vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-
-	unsigned int elementBuffer;
-	glGenBuffers(1, &elementBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 
 	// LIGHTING
 	unsigned int lightVertexArray;
@@ -73,13 +85,8 @@ int main() {
 	glGenBuffers(1, &lightVertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, lightVertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-
-	unsigned int lightElementBuffer;
-	glGenBuffers(1, &lightElementBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lightElementBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	glm::vec3 lightPosition{ 2.f, 2.f, 2.f };
 	glm::vec3 lightColor{ 1.f, 1.f, 1.f };
@@ -97,12 +104,21 @@ int main() {
 	objectShader.Set("toClipSpace", toClipSpace);
 	objectShader.Set("objectColor", objectColor);
 	objectShader.Set("lightColor", lightColor);
+	objectShader.Set("lightPosition", lightPosition);
 
 	lightShader.Use();
 	lightShader.Set("toWorldSpace", toWorldSpace);
 	lightShader.Set("toViewSpace", toViewSpace);
 	lightShader.Set("toClipSpace", toClipSpace);
 	lightShader.Set("lightColor", lightColor);
+	lightShader.Set("lightPosition", lightPosition);
+
+	// Returns a vec3 vertex position
+	std::function<glm::vec3(int)> GetVertex = [verts](int index) {
+		index *= 3;
+		glm::vec3 vertex{ verts[index], verts[index + 1], verts[index + 2] };
+		return vertex;
+	};
 
 	while (window.Running()) {
 
@@ -110,15 +126,19 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		MCamera& cam = window.GetCamera();
-		toViewSpace = glm::lookAt(cam.GetPosition(), cam.GetPosition() + cam.LookVector(), cam.UpVector());
+		glm::vec3 cameraPos = cam.GetPosition();
+		toViewSpace = glm::lookAt(cameraPos, cameraPos + cam.LookVector(), cam.UpVector());
 
 		// BOX
 		objectShader.Use();
 		glBindVertexArray(vertexArray);
 		toWorldSpace = glm::translate(UNIT, glm::vec3{ 0.f,0.f,0.f });
+		toWorldSpace = glm::rotate(toWorldSpace, (glm::radians(35.f) * (float)glfwGetTime()), glm::vec3{ 1.7f, 3.4f, 2.f });
 		objectShader.Set("toWorldSpace", toWorldSpace);
 		objectShader.Set("toViewSpace", toViewSpace);
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		objectShader.Set("eyePosition", cameraPos);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 		// LIGHT
 		lightShader.Use();
@@ -127,7 +147,8 @@ int main() {
 		toWorldSpace = glm::scale(toWorldSpace, lightSize);
 		lightShader.Set("toWorldSpace", toWorldSpace);
 		lightShader.Set("toViewSpace", toViewSpace);
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 		glfwPollEvents();
 	}

@@ -61,4 +61,7 @@
     <None Include="src\shaders\box.vert" />
     <None Include="src\shaders\light.frag" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\OldVariableData.txt" />
+  </ItemGroup>
 </Project>
