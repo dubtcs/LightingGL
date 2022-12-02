@@ -19,6 +19,9 @@ struct Light {
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+    float kc;
+    float kLinear;
+    float kQuadratic;
 };
 uniform Light lightInfo;
 
@@ -45,6 +48,14 @@ void main(){
     vec3 reflectDirection = reflect(-lightDirection, norm);
     float specularAmount = pow(max(dot(viewDirection, reflectDirection), 0.0), materialInfo.shine);
     vec3 specularColor = lightInfo.specular * specularAmount * vec3(texture(materialInfo.specular, textureCoordinate));
+
+    // Attenuation
+    float d = length(lightInfo.position - fragPosition);
+    float attenuation = 1.0 / (lightInfo.kc + lightInfo.kLinear * d + lightInfo.kQuadratic * (d * d));
+    
+    ambientEffect *= attenuation;
+    diffuseColor *= attenuation;
+    specularColor *= attenuation;
 
     // Output
     vec3 final = (ambientEffect + diffuseColor + specularColor);

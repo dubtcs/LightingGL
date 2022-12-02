@@ -87,16 +87,12 @@ int main() {
 	unsigned int lightVertexArray;
 	glGenVertexArrays(1, &lightVertexArray);
 	glBindVertexArray(lightVertexArray);
-
-	unsigned int lightVertexBuffer;
-	glGenBuffers(1, &lightVertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, lightVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	glm::vec3 lightPosition{ 2.f, 2.f, 2.f };
 	glm::vec3 lightColor{ 1.f, 1.f, 1.f };
+	glm::vec3 lightDirection{ -0.34f, 0.4f, 0.2f };
 	glm::vec3 objectColor{ 1.f, 0.5f, 0.5f };
 	glm::vec3 lightSize{ 0.25f,0.25f,0.25f };
 
@@ -123,6 +119,9 @@ int main() {
 	objectShader.Set("lightInfo.diffuse", lightDiffuseStrength);
 	objectShader.Set("lightInfo.specular", lightSpecularStrength);
 	objectShader.Set("lightInfo.position", lightPosition);
+	objectShader.Set("lightInfo.kc", 1.0f);
+	objectShader.Set("lightInfo.kLinear", 0.09f);
+	objectShader.Set("lightInfo.kQuadratic", 0.032f);
 
 	lightShader.Use();
 	lightShader.Set("toWorldSpace", toWorldSpace);
@@ -138,6 +137,8 @@ int main() {
 		return vertex;
 	};
 
+	// Normal matrix is the transpose of the inverse of the top left 3x3 matrix in the toWorldView matrix
+
 	while (window.Running()) {
 
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -150,7 +151,8 @@ int main() {
 		// BOX
 		objectShader.Use();
 		glBindVertexArray(vertexArray);
-		toWorldSpace = glm::translate(UNIT, glm::vec3{ 0.f,0.f,0.f });
+		float bruh = std::sin(glfwGetTime()) * 5; //  Just moves the cube so I can see light effects
+		toWorldSpace = glm::translate(UNIT, glm::vec3{ bruh, 0.f, bruh });
 		toWorldSpace = glm::rotate(toWorldSpace, (glm::radians(35.f) * (float)glfwGetTime()), glm::vec3{ 1.7f, 3.4f, 2.f });
 		objectShader.Set("toWorldSpace", toWorldSpace);
 		objectShader.Set("toViewSpace", toViewSpace);
