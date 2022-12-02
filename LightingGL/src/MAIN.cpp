@@ -122,6 +122,12 @@ int main() {
 	objectShader.Set("lightInfo.kc", 1.0f);
 	objectShader.Set("lightInfo.kLinear", 0.09f);
 	objectShader.Set("lightInfo.kQuadratic", 0.032f);
+	
+	MCamera& camera = window.GetCamera();
+	objectShader.Set("lightInfo.cutoff", glm::cos(glm::radians(25.f))); // Get the cosine value here on CPU instead of GPU
+	objectShader.Set("lightInfo.position", camera.GetPosition());
+	objectShader.Set("lightInfo.direction", camera.LookVector());
+	objectShader.Set("lightInfo.innerCutoff", glm::cos(glm::radians(20.f)));
 
 	lightShader.Use();
 	lightShader.Set("toWorldSpace", toWorldSpace);
@@ -157,6 +163,11 @@ int main() {
 		objectShader.Set("toWorldSpace", toWorldSpace);
 		objectShader.Set("toViewSpace", toViewSpace);
 		objectShader.Set("eyePosition", cameraPos);
+
+		objectShader.Set("lightInfo.cutoff", glm::cos(glm::radians(25.f))); // Get the cosine value here on CPU instead of GPU
+		objectShader.Set("lightInfo.position", cameraPos);
+		objectShader.Set("lightInfo.direction", cam.LookVector());
+
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
