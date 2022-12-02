@@ -158,6 +158,7 @@
     <ClInclude Include="src\extern\stb_image.h" />
     <ClInclude Include="src\mine\allinclude.h" />
     <ClInclude Include="src\mine\MCamera.h" />
+    <ClInclude Include="src\mine\MLight.h" />
     <ClInclude Include="src\mine\MShader.hpp" />
     <ClInclude Include="src\mine\MTexture.h" />
     <ClInclude Include="src\mine\MWindow.h" />

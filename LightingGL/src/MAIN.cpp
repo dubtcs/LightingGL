@@ -1,13 +1,14 @@
 
-#include <iostream>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include <functional>
+#include <iostream>
+#include <format>
 
 #include "mine/allinclude.h"
+#include "mine/MLight.h"
 
 const unsigned int W{ 1920 };
 const unsigned int H{ 1080 };
@@ -84,6 +85,12 @@ int main() {
 	glEnableVertexAttribArray(2);
 
 	// LIGHTING
+
+	glm::vec3 pointLightPositions[]{
+		glm::vec3(0.7f,  0.2f,  2.0f),
+		glm::vec3(2.3f, -3.3f, -4.0f),
+	};
+
 	unsigned int lightVertexArray;
 	glGenVertexArrays(1, &lightVertexArray);
 	glBindVertexArray(lightVertexArray);
@@ -118,11 +125,31 @@ int main() {
 	objectShader.Set("lightInfo.ambient", lightAmbientStrength);
 	objectShader.Set("lightInfo.diffuse", lightDiffuseStrength);
 	objectShader.Set("lightInfo.specular", lightSpecularStrength);
-	objectShader.Set("lightInfo.position", lightPosition);
-	objectShader.Set("lightInfo.kc", 1.0f);
-	objectShader.Set("lightInfo.kLinear", 0.09f);
-	objectShader.Set("lightInfo.kQuadratic", 0.032f);
-	
+
+	// Directional
+	objectShader.Set("dirLight.direction", glm::vec3{ 1.f, 2.f, 5.f });
+	objectShader.Set("dirLight.ambient", glm::vec3{ 1.f, 1.f, 1.f });
+	objectShader.Set("dirLight.diffuse", glm::vec3{ 0.5f, 0.25f, 0.9f });
+	objectShader.Set("dirLight.specular", glm::vec3{ 0.1f, 0.5f, 0.3f });
+
+	// Point 1
+	objectShader.Set("pLights[0].kc", 1.0f);
+	objectShader.Set("pLights[0].kLinear", 1.0f);
+	objectShader.Set("pLights[0].kQuadratic", 1.0f);
+	objectShader.Set("pLights[0].ambient", glm::vec3{ .3f, .7f, 1.f });
+	objectShader.Set("pLights[0].diffuse", glm::vec3{ 0.1f, 0.5f, 0.3f });
+	objectShader.Set("pLights[0].specular", glm::vec3{ 0.1f, 0.5f, 0.7f });
+	objectShader.Set("pLights[0].position", pointLightPositions[0]);
+
+	// Point 2
+	objectShader.Set("pLights[1].kc", 1.0f);
+	objectShader.Set("pLights[1].kLinear", 1.0f);
+	objectShader.Set("pLights[1].kQuadratic", 1.0f);
+	objectShader.Set("pLights[1].ambient", glm::vec3{ .3f, .7f, 1.f });
+	objectShader.Set("pLights[1].diffuse", glm::vec3{ 0.1f, 0.5f, 0.3f });
+	objectShader.Set("pLights[1].specular", glm::vec3{ 0.1f, 0.5f, 0.7f });
+	objectShader.Set("pLights[1].position", pointLightPositions[1]);
+
 	MCamera& camera = window.GetCamera();
 	objectShader.Set("lightInfo.cutoff", glm::cos(glm::radians(25.f))); // Get the cosine value here on CPU instead of GPU
 	objectShader.Set("lightInfo.position", camera.GetPosition());
