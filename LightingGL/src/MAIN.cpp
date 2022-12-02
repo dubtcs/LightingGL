@@ -104,7 +104,22 @@ int main() {
 	objectShader.Set("toClipSpace", toClipSpace);
 	objectShader.Set("objectColor", objectColor);
 	objectShader.Set("lightColor", lightColor);
-	objectShader.Set("lightPosition", lightPosition);
+
+	glm::vec3 objAmbientStrength{ 0.05375f, 0.05f, 0.06625 };
+	glm::vec3 objDiffuseStrength{ 0.18275f, 0.17f, 0.22525 };
+	glm::vec3 objSpecularStrength{ 0.332741f, 0.328634f, 0.346435f };
+	objectShader.Set("materialInfo.ambient", objAmbientStrength);
+	objectShader.Set("materialInfo.diffuse", objDiffuseStrength);
+	objectShader.Set("materialInfo.specular", objSpecularStrength);
+	objectShader.Set("materialInfo.shine", (0.3f * 128.f));
+
+	glm::vec3 lightAmbientStrength{ 0.1f, 0.1f, 0.1f };
+	glm::vec3 lightDiffuseStrength{ 0.75f, 0.75f, 0.75f };
+	glm::vec3 lightSpecularStrength{ 1.f, 1.f, 1.f };
+	objectShader.Set("lightInfo.ambient", lightAmbientStrength);
+	objectShader.Set("lightInfo.diffuse", lightDiffuseStrength);
+	objectShader.Set("lightInfo.specular", lightSpecularStrength);
+	objectShader.Set("lightInfo.position", lightPosition);
 
 	lightShader.Use();
 	lightShader.Set("toWorldSpace", toWorldSpace);
