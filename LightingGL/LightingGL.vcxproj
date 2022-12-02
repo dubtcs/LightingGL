@@ -167,10 +167,16 @@
     <None Include="src\shaders\box.vert" />
     <None Include="src\shaders\f.frag" />
     <None Include="src\shaders\light.frag" />
+    <None Include="src\shaders\light.vert" />
     <None Include="src\shaders\v.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\OldVariableData.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\textures\aries.png" />
+    <Image Include="src\textures\container2.png" />
+    <Image Include="src\textures\container2_specular.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

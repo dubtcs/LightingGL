@@ -60,8 +60,20 @@
     <None Include="src\shaders\box.frag" />
     <None Include="src\shaders\box.vert" />
     <None Include="src\shaders\light.frag" />
+    <None Include="src\shaders\light.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\OldVariableData.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\textures\container2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\textures\container2_specular.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\textures\aries.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
