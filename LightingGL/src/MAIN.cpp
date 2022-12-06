@@ -126,28 +126,28 @@ int main() {
 	objectShader.Set("lightInfo.diffuse", lightDiffuseStrength);
 	objectShader.Set("lightInfo.specular", lightSpecularStrength);
 
-	// Directional
+	// Directional GREEN
 	objectShader.Set("dirLight.direction", glm::vec3{ 1.f, 2.f, 5.f });
-	objectShader.Set("dirLight.ambient", glm::vec3{ 1.f, 1.f, 1.f });
-	objectShader.Set("dirLight.diffuse", glm::vec3{ 0.5f, 0.25f, 0.9f });
-	objectShader.Set("dirLight.specular", glm::vec3{ 0.1f, 0.5f, 0.3f });
+	objectShader.Set("dirLight.ambient", glm::vec3{ 0.f, 0.1f, .0f });
+	objectShader.Set("dirLight.diffuse", glm::vec3{ 0.f, 0.1f, .0f });
+	objectShader.Set("dirLight.specular", glm::vec3{ 0.f, 0.1f, .0f });
 
-	// Point 1
+	// Point 1 RED
 	objectShader.Set("pLights[0].kc", 1.0f);
 	objectShader.Set("pLights[0].kLinear", 1.0f);
 	objectShader.Set("pLights[0].kQuadratic", 1.0f);
-	objectShader.Set("pLights[0].ambient", glm::vec3{ .3f, .7f, 1.f });
-	objectShader.Set("pLights[0].diffuse", glm::vec3{ 0.1f, 0.5f, 0.3f });
-	objectShader.Set("pLights[0].specular", glm::vec3{ 0.1f, 0.5f, 0.7f });
+	objectShader.Set("pLights[0].ambient", glm::vec3{ 0.75f, .0f, .0f });
+	objectShader.Set("pLights[0].diffuse", glm::vec3{ 0.75f, .0f, .0f });
+	objectShader.Set("pLights[0].specular", glm::vec3{ 0.75f, .0f, .0f });
 	objectShader.Set("pLights[0].position", pointLightPositions[0]);
 
-	// Point 2
+	// Point 2 BLUE
 	objectShader.Set("pLights[1].kc", 1.0f);
 	objectShader.Set("pLights[1].kLinear", 1.0f);
 	objectShader.Set("pLights[1].kQuadratic", 1.0f);
-	objectShader.Set("pLights[1].ambient", glm::vec3{ .3f, .7f, 1.f });
-	objectShader.Set("pLights[1].diffuse", glm::vec3{ 0.1f, 0.5f, 0.3f });
-	objectShader.Set("pLights[1].specular", glm::vec3{ 0.1f, 0.5f, 0.7f });
+	objectShader.Set("pLights[1].ambient", glm::vec3{ 0.f, 0.f, 1.f });
+	objectShader.Set("pLights[1].diffuse", glm::vec3{ 0.f, 0.f, 1.f });
+	objectShader.Set("pLights[1].specular", glm::vec3{ 0.f, 0.f, 1.f });
 	objectShader.Set("pLights[1].position", pointLightPositions[1]);
 
 	MCamera& camera = window.GetCamera();
@@ -201,12 +201,15 @@ int main() {
 		// LIGHT
 		lightShader.Use();
 		glBindVertexArray(lightVertexArray);
-		toWorldSpace = glm::translate(UNIT, lightPosition);
-		toWorldSpace = glm::scale(toWorldSpace, lightSize);
-		lightShader.Set("toWorldSpace", toWorldSpace);
-		lightShader.Set("toViewSpace", toViewSpace);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+		for (int l{ 0 }; l < 2; l++) {
+			lightPosition = pointLightPositions[l];
+			toWorldSpace = glm::translate(UNIT, lightPosition);
+			toWorldSpace = glm::scale(toWorldSpace, lightSize);
+			lightShader.Set("toWorldSpace", toWorldSpace);
+			lightShader.Set("toViewSpace", toViewSpace);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 
 		glfwPollEvents();
 	}
